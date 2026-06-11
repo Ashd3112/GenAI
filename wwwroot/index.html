@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA // Insurance Claims & Policy AI Assistant</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="brand-name">
+                    <h2>AURA AI</h2>
+                    <span>Claims & Policy Platform</span>
+                </div>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-tab="dashboard">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="rag-chat">
+                    <i class="fa-solid fa-comment-nodes"></i>
+                    <span>RAG Assistant</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="claim-analyzer">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>Claim Summarizer</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="decision-support">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    <span>Decision Support</span>
+                </a>
+                <a href="#" class="nav-item" data-tab="doc-manager">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Document Library</span>
+                </a>
+            </nav>
+            
+            <div class="ollama-status">
+                <div class="status-indicator online"></div>
+                <div class="status-info">
+                    <p>Ollama Connection</p>
+                    <span>llama3.2 // nomic-embed</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="content-header">
+                <div class="header-title">
+                    <h1 id="page-title">Dashboard</h1>
+                    <p id="page-subtitle">Platform overview and activity metrics</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" onclick="switchTab('doc-manager')">
+                        <i class="fa-solid fa-upload"></i> Upload Document
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon policy-blue">
+                            <i class="fa-solid fa-file-shield"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Policies Indexed</h3>
+                            <h2 id="stat-policies-count">0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon claim-purple">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Claims Processed</h3>
+                            <h2 id="stat-claims-count">0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon vector-green">
+                            <i class="fa-solid fa-database"></i>
+                        </div>
+                        <div class="stat-details">
+                            <h3>Vector Chunks</h3>
+                            <h2 id="stat-chunks-count">0</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Recent Documents -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2>Recent Documents</h2>
+                            <a href="#" onclick="switchTab('doc-manager')">View All</a>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-container">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>File Name</th>
+                                            <th>Type</th>
+                                            <th>Chunks</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-docs-tbody">
+                                        <!-- Dynamic Insert -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Status & Model Details -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h2>System Architecture</h2>
+                        </div>
+                        <div class="panel-body info-panel">
+                            <div class="arch-card">
+                                <span class="tag tag-blue">ASP.NET Core 10</span>
+                                <p>Exposes robust asynchronous API endpoints, handles text extraction from PDFs via PdfPig, and coordinates system actions.</p>
+                            </div>
+                            <div class="arch-card">
+                                <span class="tag tag-purple">Semantic Kernel</span>
+                                <p>Orchestrates chat history, manages system prompts, and directs calls to Ollama completions.</p>
+                            </div>
+                            <div class="arch-card">
+                                <span class="tag tag-cyan">SQL Server</span>
+                                <p>Stores the document corpus and chunk embeddings in <code>InsuranceClaimsAssistant</code> database.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RAG Chat Assistant View -->
+            <section id="tab-rag-chat" class="tab-content">
+                <div class="chat-container">
+                    <div class="chat-sidebar">
+                        <h3>Query Filters</h3>
+                        <div class="filter-group">
+                            <label>Context Mode</label>
+                            <select id="chat-context-type">
+                                <option value="">Search All Documents</option>
+                                <option value="Policy">Only Insurance Policies</option>
+                                <option value="Claim">Only Claim Reports</option>
+                            </select>
+                        </div>
+                        <div class="hint-box">
+                            <i class="fa-solid fa-circle-info"></i>
+                            <p>Queries will execute semantic search across SQL Server, fetch context chunks, and format a RAG prompt for <strong>Llama 3.2</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="chat-main">
+                        <div class="chat-messages" id="chat-messages-container">
+                            <div class="message system">
+                                <div class="message-avatar"><i class="fa-solid fa-robot"></i></div>
+                                <div class="message-bubble">
+                                    <p>Hello! I am AURA, your AI Insurance Claims & Policy Assistant. Upload your policies and claims under the Document Library, and I can answer complex questions using vector RAG search.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <textarea id="chat-textarea" placeholder="Ask a question about policy terms or claims... (Press Shift+Enter for new line)"></textarea>
+                            <button class="btn-send" id="btn-chat-send">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Claim Summarizer View -->
+            <section id="tab-claim-analyzer" class="tab-content">
+                <div class="analyzer-layout">
+                    <div class="analyzer-sidebar panel">
+                        <div class="panel-header">
+                            <h2>Select Claim</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="analyzer-claim-select">Claim Document</label>
+                                <select id="analyzer-claim-select" class="form-control">
+                                    <option value="">-- Select a claim --</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary btn-block" id="btn-run-analyzer">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Run Summarization & Extraction
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="analyzer-results">
+                        <!-- Key Information Panel -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h2>Structured Extraction</h2>
+                            </div>
+                            <div class="panel-body">
+                                <div class="metadata-grid" id="extracted-metadata">
+                                    <div class="metadata-item">
+                                        <span class="lbl">Claimant Name</span>
+                                        <span class="val" id="val-claimant">-</span>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <span class="lbl">Policy Number</span>
+                                        <span class="val" id="val-policy-num">-</span>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <span class="lbl">Date of Loss</span>
+                                        <span class="val" id="val-date">-</span>
+                                    </div>
+                                    <div class="metadata-item">
+                                        <span class="lbl">Estimated Claim Amount</span>
+                                        <span class="val" id="val-amount">-</span>
+                                    </div>
+                                </div>
+                                <div class="metadata-full">
+                                    <span class="lbl">Incident Description</span>
+                                    <p class="val-desc" id="val-description">-</p>
+                                </div>
+                                <div class="metadata-list-section">
+                                    <span class="lbl">Key Details extracted:</span>
+                                    <ul class="details-list" id="val-key-details">
+                                        <li>No analysis performed yet.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Claim Summary Markdown -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h2>Executive Summary</h2>
+                            </div>
+                            <div class="panel-body markdown-body" id="claim-summary-container">
+                                <p class="placeholder-text">Select a claim document and run the summarizer to generate a clinical claims history review.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Decision Support View -->
+            <section id="tab-decision-support" class="tab-content">
+                <div class="decision-layout">
+                    <div class="decision-selector panel">
+                        <div class="panel-header">
+                            <h2>Coverage Simulation Setup</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label for="decision-claim-select">1. Select Claim Document</label>
+                                <select id="decision-claim-select" class="form-control">
+                                    <option value="">-- Select --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="decision-policy-select">2. Select Policy Terms Reference</label>
+                                <select id="decision-policy-select" class="form-control">
+                                    <option value="">-- Select --</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-accent btn-block" id="btn-run-decision">
+                                <i class="fa-solid fa-scale-balanced"></i> Evaluate Coverage Guidelines
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="decision-output">
+                        <!-- Recommendation Banner -->
+                        <div class="decision-banner" id="decision-banner">
+                            <div class="banner-icon">
+                                <i class="fa-solid fa-circle-question" id="decision-banner-icon"></i>
+                            </div>
+                            <div class="banner-info">
+                                <span class="banner-label">Coverage Evaluation Status</span>
+                                <h2 id="decision-banner-status">Pending Selection</h2>
+                                <p id="decision-banner-confidence"></p>
+                            </div>
+                        </div>
+
+                        <!-- Details -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <h2>AI Analyst Evaluation & Rationale</h2>
+                            </div>
+                            <div class="panel-body">
+                                <div class="evaluation-section">
+                                    <h3>Coverage Reasoning & Guidelines Comparison</h3>
+                                    <p id="decision-reasoning" class="placeholder-text">Run evaluation to compare the claim parameters with the policy wording clauses.</p>
+                                </div>
+                                <div class="evaluation-section">
+                                    <h3>Policy References / Clauses Identified</h3>
+                                    <ul class="references-list" id="decision-references">
+                                        <!-- Dynamic Insert -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Manager View -->
+            <section id="tab-doc-manager" class="tab-content">
+                <div class="upload-section">
+                    <div class="panel upload-panel">
+                        <div class="panel-body text-center">
+                            <div class="upload-icon">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <h2>Index a New Policy or Claim</h2>
+                            <p>Upload a PDF, Markdown, or Text document. The system will extract text, chunk it, embed it using <strong>nomic-embed-text</strong>, and store vectors directly inside your SQL Server database.</p>
+                            
+                            <form id="upload-form" class="upload-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="upload-doc-type">Document Type</label>
+                                        <select id="upload-doc-type" class="form-control text-center" required>
+                                            <option value="Policy">Insurance Policy Guideline</option>
+                                            <option value="Claim">Claim Incident / Damage Report</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="file-drop-zone" id="file-drop-zone">
+                                    <i class="fa-regular fa-file-lines"></i>
+                                    <p id="selected-file-label">Click or drag file here to select</p>
+                                    <input type="file" id="upload-file-input" accept=".pdf,.txt,.md,.json" required style="display:none;">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" id="btn-upload-submit">
+                                    <i class="fa-solid fa-circle-check"></i> Process & Index Document
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <h2>Document Directory</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Document Type</th>
+                                        <th>Indexed Vector Chunks</th>
+                                        <th style="width: 100px; text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="doc-manager-tbody">
+                                    <!-- Dynamic Insert -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <span id="toast-message">Notification Message</span>
+    </div>
+
+    <!-- Custom Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

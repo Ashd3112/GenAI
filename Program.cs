@@ -11,8 +11,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using UglyToad.PdfPig;
 using InsuranceAssistant;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration));
 
 // Add Services
 builder.Services.AddSingleton<HttpClient>();
@@ -26,7 +31,20 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Centralized Exception Handling & Problem Details
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
+// Health Checks
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>("Database")
+    .AddCheck<OllamaHealthCheck>("Ollama");
+
 var app = builder.Build();
+
+// Audit logging and Exception handling must be at the top of the HTTP pipeline
+app.UseExceptionHandler();
+app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
 app.UseCors();
 app.UseStaticFiles();
@@ -237,6 +255,28 @@ app.MapPost("/api/assistant/decision", async (DecisionRequest request, Orchestra
 
     var decision = await orchestrator.GetDecisionSupportAsync(request.ClaimFileName, claimText, request.PolicyFileName);
     return Results.Ok(decision);
+});
+
+// Health check endpoint with custom JSON output
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        context.Response.ContentType = "application/json";
+        var response = new
+        {
+            status = report.Status.ToString(),
+            checks = report.Entries.Select(entry => new
+            {
+                name = entry.Key,
+                status = entry.Value.Status.ToString(),
+                description = entry.Value.Description,
+                exception = entry.Value.Exception?.Message
+            }),
+            totalDuration = report.TotalDuration
+        };
+        await context.Response.WriteAsJsonAsync(response);
+    }
 });
 
 // Fallback to static index.html for SPA

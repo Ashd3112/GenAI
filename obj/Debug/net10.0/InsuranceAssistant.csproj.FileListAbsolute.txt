@@ -87,4 +87,15 @@ C:\Backup from Previous\DotNetPractice\GenAI\obj\Debug\net10.0\ref\InsuranceAssi
 C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\InsuranceAssistant.staticwebassets.runtime.json
 C:\Backup from Previous\DotNetPractice\GenAI\obj\Debug\net10.0\compressed\1qw4thy5gi-{0}-83wwhocfwj-83wwhocfwj.gz
 C:\Backup from Previous\DotNetPractice\GenAI\obj\Debug\net10.0\compressed\2sqymczmya-{0}-hvi5oieb93-hvi5oieb93.gz
-C:\Backup from Previous\DotNetPractice\GenAI\obj\Debug\net10.0\compressed\0b7h5dwrwn-{0}-b2zz0atv6z-b2zz0atv6z.gz
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Microsoft.Extensions.DependencyModel.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.AspNetCore.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.Extensions.Hosting.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.Extensions.Logging.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.Formatting.Compact.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.Settings.Configuration.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.Sinks.Console.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.Sinks.Debug.dll
+C:\Backup from Previous\DotNetPractice\GenAI\bin\Debug\net10.0\Serilog.Sinks.File.dll
+C:\Backup from Previous\DotNetPractice\GenAI\obj\Debug\net10.0\InsuranceAssistant.sourcelink.json
+C:\Backup from Previous\DotNetPractice\GenAI\obj\Debug\net10.0\compressed\0b7h5dwrwn-{0}-y659slu72g-y659slu72g.gz
